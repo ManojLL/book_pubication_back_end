@@ -8,6 +8,7 @@ import com.manojLL.book_publication.entity.Book;
 import com.manojLL.book_publication.service.AuthorService;
 import com.manojLL.book_publication.service.BookService;
 import com.manojLL.book_publication.utility.BusinessRuleException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class BookServiceImpl implements BookService {
     @Autowired
     BookDao bookDao;
@@ -28,9 +30,16 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto createNewBook(BookDto bookDto) {
+        log.info("call book service create book method");
         Optional<Author> author = authorDao.findById(bookDto.getAuthorId());
         if(!author.isPresent()){
+            log.info("author not exist");
             throw new BusinessRuleException("author not found for id : "+ bookDto.getAuthorId());
+        }
+
+        Optional<Book> existBook = bookDao.findBookByISBNNo(bookDto.getISBNNo());
+        if (existBook.isPresent()) {
+            throw new BusinessRuleException("book exist for ISBN : " + bookDto.getISBNNo());
         }
 
         Book book = new Book();
@@ -39,6 +48,7 @@ public class BookServiceImpl implements BookService {
         book.setTitle(bookDto.getTitle());
         book.setCategory(bookDto.getCategory());
         book.setISBNNo(bookDto.getISBNNo());
+        log.info("save new book");
         book = bookDao.save(book);
         return getBookDto(book);
     }

@@ -3,6 +3,7 @@ package com.manojLL.book_publication.controller;
 import com.manojLL.book_publication.dto.BookDto;
 import com.manojLL.book_publication.service.BookService;
 import com.manojLL.book_publication.utility.BusinessRuleException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,13 +20,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/books")
+@Slf4j
 public class BookController {
     @Autowired
     BookService bookService;
 
     @PostMapping
     public BookDto createBook(@RequestBody BookDto bookDto) {
+        log.info("request to create a book");
         if (bookDto.getBookId() != null) {
+            log.info("Id should be null, request body contains a id");
             throw new BusinessRuleException("Id should be null");
         }
         return bookService.createNewBook(bookDto);
