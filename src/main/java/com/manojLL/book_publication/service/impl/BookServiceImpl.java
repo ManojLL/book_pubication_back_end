@@ -55,6 +55,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto searchBookByISBNno(String ISBN) {
+        log.info("search book bu ISBN number");
         Optional<Book> book = bookDao.findBookByISBNNo(ISBN);
         if (!book.isPresent()) {
             throw new BusinessRuleException("book not found for ISBN : " + ISBN);
@@ -65,6 +66,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto addLike(Integer id) {
+        log.info("add like to the book");
         Optional<Book> book = bookDao.findById(id);
         if (!book.isPresent()) {
             throw new BusinessRuleException("book not found for id : " + id);
@@ -77,6 +79,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Integer deleteBook(Integer id) {
+        log.info("delete book");
         Optional<Book> book = bookDao.findById(id);
         if (!book.isPresent()) {
             throw new BusinessRuleException("book not found for id : " + id);
@@ -87,12 +90,14 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> getAllBooks() {
+        log.info("get all books");
         List<Book> books = bookDao.findAll();
         return books.stream().map(this::getBookDto).collect(Collectors.toList());
     }
 
     @Override
     public BookDto getBookById(Integer id) {
+        log.info("get book by book id");
         Optional<Book> book = bookDao.findById(id);
         if (!book.isPresent()) {
             throw new BusinessRuleException("book not found for id : " + id);
